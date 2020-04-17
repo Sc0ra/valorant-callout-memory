@@ -42,11 +42,15 @@ export default class Navbar extends Vue {}
 </script>
 
 <style lang="scss" scoped>
+  .navbar {
+    position: sticky;
+    top: 0;
+  }
   .navbar-brand {
-    border-right: solid 2px $red;
     .navbar-item {
       img {
         max-height: 2.5rem;
+        border-right: solid 2px $red;
       }
     }
   }
