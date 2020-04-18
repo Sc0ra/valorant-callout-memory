@@ -1,0 +1,62 @@
+[
+  {
+    "mapSlug": "haven",
+    "mapName": "Haven",
+    "mapHero": "heros/haven.jpeg",
+    "mapLayout": "layouts/haven.svg",
+    "height": 800,
+    "width": 800,
+    "places": [
+      {
+        "callout": "Long A",
+        "x": 0.82,
+        "y": 0.6
+      },
+      {
+        "callout": "Short A",
+        "x": 0.6,
+        "y": 0.4
+      }
+    ]
+  },
+  {
+    "mapSlug": "bin",
+    "mapName": "Bind",
+    "mapHero": "heros/bind.jpeg",
+    "mapLayout": "layouts/haven.svg",
+    "height": 800,
+    "width": 800,
+    "places": [
+      {
+        "callout": "Long A",
+        "x": 0.82,
+        "y": 0.6
+      },
+      {
+        "callout": "Short A",
+        "x": 0.6,
+        "y": 0.4
+      }
+    ]
+  },
+  {
+    "mapSlug": "split",
+    "mapName": "Split",
+    "mapHero": "heros/split.jpeg",
+    "mapLayout": "layouts/haven.svg",
+    "height": 800,
+    "width": 800,
+    "places": [
+      {
+        "callout": "Long A",
+        "x": 0.82,
+        "y": 0.6
+      },
+      {
+        "callout": "Short A",
+        "x": 0.6,
+        "y": 0.4
+      }
+    ]
+  }
+]
