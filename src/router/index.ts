@@ -1,19 +1,36 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
-import Home from '../views/Home.vue';
+import CalloutConnect from '../views/CalloutConnect.vue';
+import CalloutLocate from '../views/CalloutLocate.vue';
+import MapMenu from '../views/MapMenu.vue';
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
   {
-    path: '/',
-    name: 'Home',
-    component: Home,
+    path: '/connect/:mapSlug',
+    name: 'CalloutConnect',
+    component: CalloutConnect,
+    props: true,
+  },
+  {
+    path: '/locate/:mapSlug',
+    name: 'CalloutLocate',
+    component: CalloutLocate,
+    props: true,
+  },
+  {
+    path: '/locate',
+    name: 'LocateMenu',
+    component: MapMenu,
+    props: {
+      gameMode: 'locate',
+    },
   },
 ];
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes,
 });
