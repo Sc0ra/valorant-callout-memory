@@ -24,18 +24,21 @@
         <router-link
           class="navbar-item"
           to="/"
+          @click.native="isMenuActive = false"
         >
           Home
         </router-link>
         <router-link
           class="navbar-item"
           to="/locate"
+          @click.native="isMenuActive = false"
         >
           Locate
         </router-link>
         <p
           class="navbar-item has-text-grey"
           to="/connect"
+          @click="isMenuActive = false"
         >
           Connect
         </p>

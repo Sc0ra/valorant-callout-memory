@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <navbar />
-    <router-view />
+    <router-view class="main" />
   </div>
 </template>
 
@@ -34,5 +34,10 @@ export default class App extends Vue {
 #app {
   text-align: center;
   color: #ece8e1;
+}
+
+.main {
+  padding-top: 1rem;
+  height: calc(100vh - 56px);
 }
 </style>

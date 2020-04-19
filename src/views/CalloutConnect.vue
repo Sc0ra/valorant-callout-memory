@@ -1,17 +1,22 @@
 <template>
-  <div :class="{'drag-hovered': dragHovered}">
+  <div
+    ref="wrapper"
+    class="wrapper"
+  >
     <v-stage
       v-if="map"
-      :config="stageConfig"
+      :config="{
+        width: mapSize.width,
+        height: mapSize.height,
+      }"
       ref="stage"
+      :class="{'drag-hovered': dragHovered}"
     >
       <v-layer ref="map">
         <v-image :config="{
           image: image,
           width: mapSize.width,
           height: mapSize.height,
-          x: mapTopLeftPosition.x,
-          y: mapTopLeftPosition.y,
         }"
         />
       </v-layer>
@@ -83,6 +88,12 @@ export default class CalloutConnect extends Vue {
   })
   mapSlug!: string;
 
+  $refs!: {
+    wrapper: HTMLDivElement;
+    stage: Vue & { getStage: () => Konva.Stage };
+    tags: Vue & { getNode: () => Konva.Layer };
+  }
+
   @Getter('getMap', { namespace: 'maps' })
   getMap!: (mapSlug: string) => Map;
 
@@ -90,42 +101,42 @@ export default class CalloutConnect extends Vue {
     return this.getMap(this.mapSlug);
   }
 
-  stageConfig = {
-    width: window.innerWidth,
-    height: window.innerHeight - 56, // Navbar height
-  };
-
   dragHovered = false;
 
   image: HTMLImageElement | null = null;
 
-  get mapTopLeftPosition() {
-    return this.map && {
-      x: (window.innerWidth - this.mapSize.width) / 2,
-      y: 56,
-    };
-  }
-
   get mapSize() {
-    return (window.innerHeight >= 900 && window.innerWidth >= 900)
-      ? { width: this.map.width, height: this.map.height }
-      : { width: window.innerWidth * 0.9, height: window.innerWidth * 0.9 };
+    if (this.$refs.wrapper) {
+      console.log(this.$refs.wrapper.clientWidth);
+      console.log(this.$refs.wrapper.clientHeight);
+      if (this.$refs.wrapper.clientWidth >= this.$refs.wrapper.clientHeight) {
+        return {
+          height: this.$refs.wrapper.clientHeight * 0.9,
+          width: (this.$refs.wrapper.clientHeight * 0.9) * this.map.mapRatio,
+        };
+      }
+      return {
+        width: this.$refs.wrapper.clientWidth * 0.9,
+        height: (this.$refs.wrapper.clientWidth * 0.9) / this.map.mapRatio,
+      };
+    }
+    return { width: 0, height: 0 };
   }
 
   get pins() {
     return this.map && this.map.places.map((place) => ({
       ...place,
-      x: this.mapTopLeftPosition.x + place.x * this.mapSize.width,
-      y: this.mapTopLeftPosition.y + place.y * this.mapSize.height,
+      x: place.x * this.mapSize.width,
+      y: place.y * this.mapSize.height,
     }));
   }
 
   get stage() {
-    return (this.$refs.stage as Vue & { getStage: () => Konva.Stage }).getStage();
+    return this.$refs.stage.getStage();
   }
 
   get tagsLayer() {
-    return (this.$refs.tags as Vue & { getNode: () => Konva.Layer }).getNode();
+    return this.$refs.tags.getNode();
   }
 
   onDragEnd(place: Place, index: number) {
@@ -174,5 +185,11 @@ export default class CalloutConnect extends Vue {
 <style lang="scss" scoped>
   .drag-hovered {
     cursor: pointer;
+  }
+  .wrapper {
+    height: 100%;
+  }
+  .stage::v-deep .konvajs-content {
+      margin: auto;
   }
 </style>

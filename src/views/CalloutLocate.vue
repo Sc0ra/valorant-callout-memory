@@ -1,36 +1,51 @@
 <template>
-  <div :class="{'drag-hovered': dragHovered}">
-    <v-stage
-      v-if="map"
-      :config="stageConfig"
-      ref="stage"
+  <div>
+    <h2 class="title is-2">
+      {{ toGuess }}
+    </h2>
+    <div
+      ref="wrapper"
+      class="wrapper"
     >
-      <v-layer ref="map">
-        <v-image :config="{
-          image: image,
+      <v-stage
+        v-if="map"
+        :config="{
           width: mapSize.width,
-          height: mapSize.height,
-          x: mapTopLeftPosition.x,
-          y: mapTopLeftPosition.y,
+          height: mapSize.height
         }"
-        />
-      </v-layer>
-      <v-layer ref="pins">
-        <v-circle
-          v-for="pin in pins"
-          :key="pin.callout"
-          :config="{
-            fill: 'whitesmoke',
-            x: pin.x,
-            y: pin.y,
-            radius: 5,
+        ref="stage"
+        class="stage"
+        :class="{'pointer-hover': pinHovered}"
+      >
+        <v-layer>
+          <v-image :config="{
+            image: image,
+            width: mapSize.width,
+            height: mapSize.height,
+            x: 0,
+            y: 0,
           }"
-          @mouseenter="dragHovered = true"
-          @mouseleave="dragHovered = false"
-          @click="onClick(pin)"
-        />
-      </v-layer>
-    </v-stage>
+          />
+        </v-layer>
+        <v-layer>
+          <v-circle
+            v-for="pin in pins"
+            :key="pin.callout"
+            :config="{
+              fill: 'whitesmoke',
+              x: pin.x,
+              y: pin.y,
+              radius: 5,
+              hitStrokeWidth: 10,
+            }"
+            @mouseenter="pinHovered = true"
+            @mouseleave="pinHovered = false"
+            @click="onClick(pin)"
+            @touchstart="onClick(pin)"
+          />
+        </v-layer>
+      </v-stage>
+    </div>
   </div>
 </template>
 
@@ -52,6 +67,11 @@ export default class CalloutLocate extends Vue {
   })
   mapSlug!: string;
 
+  $refs!: {
+    wrapper: HTMLDivElement;
+    stage: Vue & { getStage: () => Konva.Stage };
+  }
+
   @Getter('getMap', { namespace: 'maps' })
   getMap!: (mapSlug: string) => Map;
 
@@ -59,47 +79,46 @@ export default class CalloutLocate extends Vue {
     return this.getMap(this.mapSlug);
   }
 
-  toGuess = 'Long A';
-
-  stageConfig = {
-    width: window.innerWidth,
-    height: window.innerHeight - 56, // Navbar height
-  };
-
-  dragHovered = false;
-
-  image: HTMLImageElement | null = null;
-
-  get mapTopLeftPosition() {
-    return this.map && {
-      x: (window.innerWidth - this.mapSize.width) / 2,
-      y: 56,
-    };
-  }
+  toGuess = '';
 
   get mapSize() {
-    return (window.innerHeight >= 900 && window.innerWidth >= 900)
-      ? { width: this.map.width, height: this.map.height }
-      : { width: window.innerWidth * 0.9, height: window.innerWidth * 0.9 };
+    if (this.$refs.wrapper) {
+      console.log(this.$refs.wrapper.clientWidth);
+      console.log(this.$refs.wrapper.clientHeight);
+      if (this.$refs.wrapper.clientWidth >= this.$refs.wrapper.clientHeight) {
+        return {
+          height: this.$refs.wrapper.clientHeight * 0.9,
+          width: (this.$refs.wrapper.clientHeight * 0.9) * this.map.mapRatio,
+        };
+      }
+      return {
+        width: this.$refs.wrapper.clientWidth * 0.9,
+        height: (this.$refs.wrapper.clientWidth * 0.9) / this.map.mapRatio,
+      };
+    }
+    return { width: 0, height: 0 };
   }
+
+  pinHovered = false;
+
+  image: HTMLImageElement | null = null;
 
   get pins() {
     return this.map && this.map.places.map((place) => ({
       ...place,
-      x: this.mapTopLeftPosition.x + place.x * this.mapSize.width,
-      y: this.mapTopLeftPosition.y + place.y * this.mapSize.height,
+      x: place.x * this.mapSize.width,
+      y: place.y * this.mapSize.height,
     }));
   }
 
   get stage() {
-    return (this.$refs.stage as Vue & { getStage: () => Konva.Stage }).getStage();
+    return this.$refs.stage.getStage();
   }
 
   onClick(place: Place) {
     if (place.callout === this.toGuess) {
-      console.log('success');
-    } else {
-      console.log('failure');
+      const randIndex = Math.floor(Math.random() * this.map.places.length);
+      this.toGuess = this.map.places[randIndex].callout;
     }
   }
 
@@ -111,6 +130,8 @@ export default class CalloutLocate extends Vue {
       image.onload = () => {
         this.image = image;
       };
+      const randIndex = Math.floor(Math.random() * this.map.places.length);
+      this.toGuess = this.map.places[randIndex].callout;
     }
   }
 
@@ -126,7 +147,13 @@ export default class CalloutLocate extends Vue {
 </script>
 
 <style lang="scss" scoped>
-  .drag-hovered {
+  .wrapper {
+    height: 100%;
+  }
+  .pointer-hover {
     cursor: pointer;
+  }
+  .stage::v-deep .konvajs-content {
+      margin: auto;
   }
 </style>

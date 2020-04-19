@@ -4,18 +4,147 @@
     "mapName": "Haven",
     "mapHero": "heros/haven.jpeg",
     "mapLayout": "layouts/haven.svg",
-    "height": 800,
-    "width": 800,
+    "mapRatio": 1,
     "places": [
       {
-        "callout": "Long A",
+        "callout": "A Long",
         "x": 0.82,
         "y": 0.6
       },
       {
-        "callout": "Short A",
-        "x": 0.6,
-        "y": 0.4
+        "callout": "A Lobby",
+        "x": 0.63,
+        "y": 0.645
+      },
+      {
+        "callout": "A Short",
+        "x": 0.635,
+        "y": 0.48
+      },
+      {
+        "callout": "Towers",
+        "x": 0.83,
+        "y": 0.495
+      },
+      {
+        "callout": "A Ramp",
+        "x": 0.895,
+        "y": 0.48
+      },
+      {
+        "callout": "A Box",
+        "x": 0.86,
+        "y": 0.375
+      },
+      {
+        "callout": "Bottom A (below)",
+        "x": 0.88,
+        "y": 0.325
+      },
+      {
+        "callout": "A Heaven",
+        "x": 0.88,
+        "y": 0.275
+      },
+      {
+        "callout": "Heaven Stairs",
+        "x": 0.8,
+        "y": 0.215
+      },
+      {
+        "callout": "A Tunnel",
+        "x": 0.78,
+        "y": 0.285
+      },
+      {
+        "callout": "A Link",
+        "x": 0.68,
+        "y": 0.38
+      },
+      {
+        "callout": "Back B",
+        "x": 0.505,
+        "y": 0.28
+      },
+      {
+        "callout": "B Box",
+        "x": 0.505,
+        "y": 0.39
+      },
+      {
+        "callout": "B Door",
+        "x": 0.5,
+        "y": 0.49
+      },
+      {
+        "callout": "Mid Courtyard",
+        "x": 0.5,
+        "y": 0.6
+      },
+      {
+        "callout": "Mid Window",
+        "x": 0.5,
+        "y": 0.68
+      },
+      {
+        "callout": "Garden",
+        "x": 0.63,
+        "y": 0.77
+      },
+      {
+        "callout": "Bottom Mid",
+        "x": 0.375,
+        "y": 0.7
+      },
+      {
+        "callout": "C Lobby",
+        "x": 0.26,
+        "y": 0.72
+      },
+      {
+        "callout": "Cubby",
+        "x": 0.175,
+        "y": 0.61
+      },
+      {
+        "callout": "C Long",
+        "x": 0.135,
+        "y": 0.54
+      },
+      {
+        "callout": "Plat",
+        "x": 0.08,
+        "y": 0.385
+      },
+      {
+        "callout": "Logs",
+        "x": 0.24,
+        "y": 0.39
+      },
+      {
+        "callout": "C Link",
+        "x": 0.33,
+        "y": 0.33
+      },
+      {
+        "callout": "C Window",
+        "x": 0.36,
+        "y": 0.41
+      },
+      {
+        "callout": "Garage",
+        "x": 0.365,
+        "y": 0.47
+      },
+      {
+        "callout": "Connector",
+        "x": 0.28,
+        "y": 0.465
+      },
+      {
+        "callout": "Mid Doors",
+        "x": 0.365,
+        "y": 0.57
       }
     ]
   },

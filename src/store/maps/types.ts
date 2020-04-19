@@ -9,8 +9,7 @@ export interface Map {
   mapName: string;
   mapHero: string;
   mapLayout: string;
-  height: number;
-  width: number;
+  mapRatio: number;
   places: Place[];
 }
 
