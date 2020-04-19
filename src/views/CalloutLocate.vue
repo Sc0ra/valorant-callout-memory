@@ -81,22 +81,22 @@ export default class CalloutLocate extends Vue {
 
   toGuess = '';
 
-  get mapSize() {
-    if (this.$refs.wrapper) {
-      console.log(this.$refs.wrapper.clientWidth);
-      console.log(this.$refs.wrapper.clientHeight);
+  mapSize = { width: 0, height: 0 };
+
+  mounted() {
+    if (this.map) {
       if (this.$refs.wrapper.clientWidth >= this.$refs.wrapper.clientHeight) {
-        return {
+        this.mapSize = {
           height: this.$refs.wrapper.clientHeight * 0.9,
           width: (this.$refs.wrapper.clientHeight * 0.9) * this.map.mapRatio,
         };
+      } else {
+        this.mapSize = {
+          width: this.$refs.wrapper.clientWidth * 0.9,
+          height: (this.$refs.wrapper.clientWidth * 0.9) / this.map.mapRatio,
+        };
       }
-      return {
-        width: this.$refs.wrapper.clientWidth * 0.9,
-        height: (this.$refs.wrapper.clientWidth * 0.9) / this.map.mapRatio,
-      };
     }
-    return { width: 0, height: 0 };
   }
 
   pinHovered = false;
@@ -132,6 +132,19 @@ export default class CalloutLocate extends Vue {
       };
       const randIndex = Math.floor(Math.random() * this.map.places.length);
       this.toGuess = this.map.places[randIndex].callout;
+      if (this.$refs.wrapper) {
+        if (this.$refs.wrapper.clientWidth >= this.$refs.wrapper.clientHeight) {
+          this.mapSize = {
+            height: this.$refs.wrapper.clientHeight * 0.9,
+            width: (this.$refs.wrapper.clientHeight * 0.9) * this.map.mapRatio,
+          };
+        } else {
+          this.mapSize = {
+            width: this.$refs.wrapper.clientWidth * 0.9,
+            height: (this.$refs.wrapper.clientWidth * 0.9) / this.map.mapRatio,
+          };
+        }
+      }
     }
   }
 
