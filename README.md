@@ -1,4 +1,4 @@
-# valorant-callout-memory
+# valorant-callouts
 
 ## Project setup
 ```
