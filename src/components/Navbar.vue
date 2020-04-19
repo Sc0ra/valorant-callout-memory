@@ -1,9 +1,12 @@
 <template>
   <nav class="navbar is-dark" role="navigation" aria-label="main navigation">
     <div class="navbar-brand">
-      <a class="navbar-item" href="/">
+      <router-link
+        class="navbar-item"
+        to="/"
+      >
         <img src="../assets/valorant-callouts-logo.svg" width="150" height="36">
-      </a>
+      </router-link>
       <a
         role="button"
         class="navbar-burger burger"
@@ -21,13 +24,6 @@
       :class="{'is-active': isMenuActive}"
     >
       <div class="navbar-start">
-        <router-link
-          class="navbar-item"
-          to="/"
-          @click.native="isMenuActive = false"
-        >
-          Home
-        </router-link>
         <router-link
           class="navbar-item"
           to="/locate"
