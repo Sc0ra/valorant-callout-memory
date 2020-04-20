@@ -1,12 +1,18 @@
 import Vue from 'vue';
 import VueRouter, { RouteConfig } from 'vue-router';
-import CalloutConnect from '../views/CalloutConnect.vue';
-import CalloutLocate from '../views/CalloutLocate.vue';
-import MapMenu from '../views/MapMenu.vue';
+import CalloutConnect from '@/views/CalloutConnect.vue';
+import CalloutLocate from '@/views/CalloutLocate.vue';
+import MapMenu from '@/views/MapMenu.vue';
+import Home from '@/views/Home.vue';
 
 Vue.use(VueRouter);
 
 const routes: Array<RouteConfig> = [
+  {
+    path: '/',
+    name: 'Home',
+    component: Home,
+  },
   {
     path: '/connect/:mapSlug',
     name: 'CalloutConnect',
