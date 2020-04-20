@@ -38,6 +38,35 @@
         >
           Connect
         </p>
+        <p
+          class="navbar-item has-text-grey"
+          to="/call"
+          @click="isMenuActive = false"
+        >
+          Call
+        </p>
+      </div>
+      <div class="navbar-end">
+        <div class="navbar-item">
+          <a href="https://twitter.com/Sc0ra" target="_blank" class="icon is-medium has-text-white">
+            <i class="fab fa-twitter-square fa-2x" />
+          </a>
+        </div>
+        <div class="navbar-item">
+          <a href="https://github.com/Sc0ra/valorant-callouts" target="_blank" class="icon is-medium has-text-white">
+            <i class="fab fa-github fa-2x" />
+          </a>
+        </div>
+        <div class="navbar-item">
+          <a href="https://discord.gg/NnPyNT" target="_blank" class="icon is-medium has-text-white">
+            <i class="fab fa-discord fa-2x" />
+          </a>
+        </div>
+        <div class="navbar-item">
+          <a href="https://discord.gg/NnPyNT" target="_blank" class="button is-primary">
+            Feedback and Bug Reports
+          </a>
+        </div>
       </div>
     </div>
   </nav>
