@@ -1,11 +1,11 @@
 <template>
-  <div>
+  <div class="wrapper">
     <h2 class="title is-2">
       {{ toGuess }}
     </h2>
     <div
       ref="wrapper"
-      class="wrapper"
+      class="stage-wrapper"
     >
       <v-stage
         v-if="map"
@@ -161,6 +161,10 @@ export default class CalloutLocate extends Vue {
 
 <style lang="scss" scoped>
   .wrapper {
+    display: flex;
+    flex-flow: column;
+  }
+  .stage-wrapper {
     height: 100%;
   }
   .pointer-hover {
