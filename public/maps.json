@@ -149,22 +149,136 @@
     ]
   },
   {
-    "mapSlug": "bin",
+    "mapSlug": "bind",
     "mapName": "Bind",
     "mapHero": "heros/bind.jpeg",
-    "mapLayout": "layouts/haven.svg",
-    "height": 800,
-    "width": 800,
+    "mapLayout": "layouts/bind.svg",
+    "mapRatio": 1,
     "places": [
       {
-        "callout": "Long A",
+        "callout": "Cave",
+        "x": 0.4,
+        "y": 0.6
+      },
+      {
+        "callout": "Link",
+        "x": 0.56,
+        "y": 0.755
+      },
+      {
+        "callout": "B Lobby",
+        "x": 0.19,
+        "y": 0.67
+      },
+      {
+        "callout": "B Long",
+        "x": 0.105,
+        "y": 0.5
+      },
+      {
+        "callout": "B Port",
+        "x": 0.06,
+        "y": 0.415
+      },
+      {
+        "callout": "Garden",
+        "x": 0.165,
+        "y": 0.4
+      },
+      {
+        "callout": "Elbow",
+        "x": 0.07,
+        "y": 0.29
+      },
+      {
+        "callout": "B Hall",
+        "x": 0.21,
+        "y": 0.15
+      },
+      {
+        "callout": "B Cubby",
+        "x": 0.29,
+        "y": 0.245
+      },
+      {
+        "callout": "Window",
+        "x": 0.245,
+        "y": 0.37
+      },
+      {
+        "callout": "Hookah",
+        "x": 0.245,
+        "y": 0.46
+      },
+      {
+        "callout": "B Short",
+        "x": 0.335,
+        "y": 0.49
+      },
+      {
+        "callout": "A Port Exit",
+        "x": 0.44,
+        "y": 0.425
+      },
+      {
+        "callout": "A Port",
+        "x": 0.58,
+        "y": 0.385
+      },
+      {
+        "callout": "A Cubby",
+        "x": 0.56,
+        "y": 0.445
+      },
+      {
+        "callout": "A Short",
+        "x": 0.595,
+        "y": 0.48
+      },
+      {
+        "callout": "A Lobby",
         "x": 0.82,
         "y": 0.6
       },
       {
-        "callout": "Short A",
-        "x": 0.6,
-        "y": 0.4
+        "callout": "B Port Exit",
+        "x": 0.93,
+        "y": 0.625
+      },
+      {
+        "callout": "Showers / Bath",
+        "x": 0.84,
+        "y": 0.405
+      },
+      {
+        "callout": "Tower",
+        "x": 0.805,
+        "y": 0.37
+      },
+      {
+        "callout": "Truck",
+        "x": 0.655,
+        "y": 0.3
+      },
+      {
+        "callout": "Pillar",
+        "x": 0.61,
+        "y": 0.33
+      },
+      {
+        "callout": "U Hall",
+        "x": 0.56,
+        "y": 0.29
+      },
+      {
+        "callout": "Vent",
+        "x": 0.585,
+        "y": 0.22
+      },
+      {
+        "callout": "Tower / Heaven",
+        "x": 0.75,
+        "y": 0.155
       }
     ]
   },
@@ -172,19 +286,108 @@
     "mapSlug": "split",
     "mapName": "Split",
     "mapHero": "heros/split.jpeg",
-    "mapLayout": "layouts/haven.svg",
-    "height": 800,
-    "width": 800,
+    "mapLayout": "layouts/split.svg",
+    "mapRatio": 1,
     "places": [
       {
-        "callout": "Long A",
-        "x": 0.82,
-        "y": 0.6
+        "callout": "B Lobby",
+        "x": 0.205,
+        "y": 0.75
       },
       {
-        "callout": "Short A",
-        "x": 0.6,
-        "y": 0.4
+        "callout": "B Link",
+        "x": 0.3,
+        "y": 0.665
+      },
+      {
+        "callout": "B Main",
+        "x": 0.1,
+        "y": 0.57
+      },
+      {
+        "callout": "Back B",
+        "x": 0.05,
+        "y": 0.27
+      },
+      {
+        "callout": "B Rafters",
+        "x": 0.24,
+        "y": 0.355
+      },
+      {
+        "callout": "B Alley",
+        "x": 0.19,
+        "y": 0.22
+      },
+      {
+        "callout": "B Stairs",
+        "x": 0.395,
+        "y": 0.32
+      },
+      {
+        "callout": "B Tower",
+        "x": 0.325,
+        "y": 0.42
+      },
+      {
+        "callout": "Mid Mail",
+        "x": 0.375,
+        "y": 0.5
+      },
+      {
+        "callout": "Top Mid",
+        "x": 0.475,
+        "y": 0.5
+      },
+      {
+        "callout": "Mid Vent",
+        "x": 0.545,
+        "y": 0.44
+      },
+      {
+        "callout": "A Tower",
+        "x": 0.67,
+        "y": 0.28
+      },
+      {
+        "callout": "Screens",
+        "x": 0.82,
+        "y": 0.16
+      },
+      {
+        "callout": "Back A",
+        "x": 0.88,
+        "y": 0.225
+      },
+      {
+        "callout": "A Rafters",
+        "x": 0.78,
+        "y": 0.39
+      },
+      {
+        "callout": "A Main",
+        "x": 0.8,
+        "y": 0.52
+      },
+      {
+        "callout": "A Ramp",
+        "x": 0.68,
+        "y": 0.52
+      },
+      {
+        "callout": "A Lobby",
+        "x": 0.87,
+        "y": 0.695
+      },
+      {
+        "callout": "A Sewer",
+        "x": 0.71,
+        "y": 0.685
+      },
+      {
+        "callout": "Bottom Mid",
+        "x": 0.46,
+        "y": 0.66
       }
     ]
   }
