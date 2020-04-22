@@ -9,7 +9,7 @@
 	.st3{fill:#182338;}
 	.st4{display:none;fill:#273552;}
 	.st5{display:none;opacity:0.15;fill:url(#SVGID_3_);enable-background:new    ;}
-	.st6{opacity:0.15;fill:url(#SVGID_4_);enable-background:new    ;}
+	.st6{display:none;opacity:0.15;fill:url(#SVGID_4_);enable-background:new    ;}
 	
 		.st7{opacity:0.5;fill:#4D5F83;fill-opacity:0.15;stroke:#4D5F83;stroke-width:1.6433;stroke-miterlimit:16;enable-background:new    ;}
 	.st8{display:none;opacity:0.15;}
