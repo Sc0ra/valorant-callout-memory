@@ -1,8 +1,32 @@
 <template>
   <div class="wrapper">
-    <h2 class="title is-2">
-      {{ toGuess }}
-    </h2>
+    <div class="level is-mobile">
+      <div class="level-item success-count">
+        <h2 class="title is-2">
+          {{ successCount }}
+        </h2>
+      </div>
+      <div class="level-item">
+        <h2
+          v-if="toGuess.length > 0"
+          class="title is-2"
+        >
+          {{ toGuess[0] }}
+        </h2>
+        <span
+          v-else
+          class="icon is-large retry"
+          @click="onRetry"
+        >
+          <i class="fas fa-redo fa-2x"></i>
+        </span>
+      </div>
+      <div class="level-item failure-count">
+        <h2 class="title is-2">
+          {{ failureCount }}
+        </h2>
+      </div>
+    </div>
     <div
       ref="wrapper"
       class="stage-wrapper"
@@ -29,7 +53,8 @@
         </v-layer>
         <v-layer>
           <v-circle
-            v-for="pin in pins"
+            v-for="(pin, id) in pins"
+            ref="pins"
             :key="pin.callout"
             :config="{
               fill: 'whitesmoke',
@@ -40,8 +65,8 @@
             }"
             @mouseenter="pinHovered = true"
             @mouseleave="pinHovered = false"
-            @click="onClick(pin)"
-            @touchstart="onClick(pin)"
+            @click="onClick(pin, id)"
+            @touchstart="onClick(pin, id)"
           />
         </v-layer>
       </v-stage>
@@ -70,6 +95,7 @@ export default class CalloutLocate extends Vue {
   $refs!: {
     wrapper: HTMLDivElement;
     stage: Vue & { getStage: () => Konva.Stage };
+    pins: Vue & { getNode: () => Konva.Shape}[];
   }
 
   @Getter('getMap', { namespace: 'maps' })
@@ -79,7 +105,13 @@ export default class CalloutLocate extends Vue {
     return this.getMap(this.mapSlug);
   }
 
-  toGuess = '';
+  toGuess: string[] = [];
+
+  numberToGuess = 10;
+
+  successCount = 0;
+
+  failureCount = 0;
 
   mapSize = { width: 0, height: 0 };
 
@@ -115,11 +147,45 @@ export default class CalloutLocate extends Vue {
     return this.$refs.stage.getStage();
   }
 
-  onClick(place: Place) {
-    if (place.callout === this.toGuess) {
-      const randIndex = Math.floor(Math.random() * this.map.places.length);
-      this.toGuess = this.map.places[randIndex].callout;
+  get pinNodes() {
+    return this.$refs.pins.map((pin) => pin.getNode());
+  }
+
+  onClick(place: Place, placeId: number) {
+    const pin = this.pinNodes[placeId];
+    const anim = new Konva.Animation((frame) => {
+      if (frame) {
+        const scale = 0.7 * Math.sin((frame.time * 2 * Math.PI) / 800) + 1;
+        pin.scale({ x: scale, y: scale });
+      }
+    }, pin.getLayer());
+    if (place.callout === this.toGuess[0]) {
+      this.successCount += 1;
+      pin.fill('#24e8ad');
+      anim.start();
+      setTimeout(() => {
+        anim.stop();
+        pin.fill('whitesmoke');
+        pin.draw();
+      }, 400);
+    } else {
+      this.failureCount += 1;
+      pin.fill('#ff4655');
+      anim.start();
+      setTimeout(() => {
+        anim.stop();
+        pin.fill('whitesmoke');
+        pin.draw();
+      }, 400);
     }
+    this.toGuess = this.toGuess.slice(1);
+  }
+
+  onRetry() {
+    this.failureCount = 0;
+    this.successCount = 0;
+    this.toGuess = this.shuffle(this.map.places.map((p) => p.callout))
+      .slice(0, this.numberToGuess);
   }
 
   @Watch('map', { immediate: true })
@@ -130,8 +196,8 @@ export default class CalloutLocate extends Vue {
       image.onload = () => {
         this.image = image;
       };
-      const randIndex = Math.floor(Math.random() * this.map.places.length);
-      this.toGuess = this.map.places[randIndex].callout;
+      this.toGuess = this.shuffle(this.map.places.map((p) => p.callout))
+        .slice(0, this.numberToGuess);
       if (this.$refs.wrapper) {
         if (this.$refs.wrapper.clientWidth >= this.$refs.wrapper.clientHeight) {
           this.mapSize = {
@@ -172,5 +238,22 @@ export default class CalloutLocate extends Vue {
   }
   .stage::v-deep .konvajs-content {
       margin: auto;
+  }
+  .success-count {
+    max-width: 10vw;
+    text-align: left;
+    padding: 1rem;
+    background-color: $green;
+    clip-path: polygon(0 0, 100% 0%, 75% 100%, 0% 90%);
+  }
+  .failure-count {
+    max-width: 10vw;
+    text-align: left;
+    padding: 1rem;
+    background-color: $red;
+    clip-path: polygon(0 0, 100% 0%, 100% 90%, 25% 100%);
+  }
+  .retry {
+    cursor: pointer;
   }
 </style>
