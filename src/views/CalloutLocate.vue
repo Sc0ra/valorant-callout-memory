@@ -71,6 +71,28 @@
         </v-layer>
       </v-stage>
     </div>
+    <div
+      v-if="displayHelp"
+      class="message"
+    >
+      <div class="message-header">
+        <p>Rules</p>
+        <button
+          class="delete has-background-dark"
+          @click="onCloseHelp"
+        />
+      </div>
+      <div class="message-body has-background-dark has-text-white content">
+        <ul class="has-text-left">
+          <li>
+            Click on the location of the callouts
+          </li>
+          <li>
+            Check where you were wrong at the end of the game
+          </li>
+        </ul>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -105,6 +127,10 @@ export default class CalloutLocate extends Vue {
     return this.getMap(this.mapSlug);
   }
 
+  timer = 0;
+
+  displayHelp = true;
+
   toGuess: string[] = [];
 
   numberToGuess = 10;
@@ -114,22 +140,6 @@ export default class CalloutLocate extends Vue {
   failureCount = 0;
 
   mapSize = { width: 0, height: 0 };
-
-  mounted() {
-    if (this.map) {
-      if (this.$refs.wrapper.clientWidth >= this.$refs.wrapper.clientHeight) {
-        this.mapSize = {
-          height: this.$refs.wrapper.clientHeight * 0.9,
-          width: (this.$refs.wrapper.clientHeight * 0.9) * this.map.mapRatio,
-        };
-      } else {
-        this.mapSize = {
-          width: this.$refs.wrapper.clientWidth * 0.9,
-          height: (this.$refs.wrapper.clientWidth * 0.9) / this.map.mapRatio,
-        };
-      }
-    }
-  }
 
   pinHovered = false;
 
@@ -181,6 +191,11 @@ export default class CalloutLocate extends Vue {
     this.toGuess = this.toGuess.slice(1);
   }
 
+  onCloseHelp() {
+    this.displayHelp = false;
+    this.$nextTick(() => this.resizeCanvas());
+  }
+
   onRetry() {
     this.failureCount = 0;
     this.successCount = 0;
@@ -199,18 +214,28 @@ export default class CalloutLocate extends Vue {
       this.toGuess = this.shuffle(this.map.places.map((p) => p.callout))
         .slice(0, this.numberToGuess);
       if (this.$refs.wrapper) {
-        if (this.$refs.wrapper.clientWidth >= this.$refs.wrapper.clientHeight) {
-          this.mapSize = {
-            height: this.$refs.wrapper.clientHeight * 0.9,
-            width: (this.$refs.wrapper.clientHeight * 0.9) * this.map.mapRatio,
-          };
-        } else {
-          this.mapSize = {
-            width: this.$refs.wrapper.clientWidth * 0.9,
-            height: (this.$refs.wrapper.clientWidth * 0.9) / this.map.mapRatio,
-          };
-        }
+        this.resizeCanvas();
       }
+    }
+  }
+
+  resizeCanvas() {
+    if (this.$refs.wrapper.clientWidth >= this.$refs.wrapper.clientHeight) {
+      this.mapSize = {
+        height: (this.$refs.wrapper.clientHeight * 0.95),
+        width: this.$refs.wrapper.clientHeight * 0.95 * this.map.mapRatio,
+      };
+    } else {
+      this.mapSize = {
+        width: this.$refs.wrapper.clientWidth,
+        height: this.$refs.wrapper.clientWidth / this.map.mapRatio,
+      };
+    }
+  }
+
+  mounted() {
+    if (this.map) {
+      this.resizeCanvas();
     }
   }
 
@@ -240,14 +265,14 @@ export default class CalloutLocate extends Vue {
       margin: auto;
   }
   .success-count {
-    max-width: 10vw;
+    max-width: 150px;
     text-align: left;
     padding: 1rem;
     background-color: $green;
     clip-path: polygon(0 0, 100% 0%, 75% 100%, 0% 90%);
   }
   .failure-count {
-    max-width: 10vw;
+    max-width: 150px;
     text-align: left;
     padding: 1rem;
     background-color: $red;
@@ -255,5 +280,8 @@ export default class CalloutLocate extends Vue {
   }
   .retry {
     cursor: pointer;
+  }
+  .message {
+    margin: 1rem;
   }
 </style>

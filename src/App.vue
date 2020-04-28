@@ -37,7 +37,6 @@ export default class App extends Vue {
 }
 
 .main {
-  padding: 1rem;
   height: calc(100vh - 56px);
 }
 </style>
