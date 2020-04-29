@@ -41,7 +41,7 @@ export default class Pin extends Vue {
   isAnswer!: boolean;
 
   $refs!: {
-    pin: Vue & { getNode: () => Konva.Node };
+    pin: Vue & { getNode: () => Konva.Shape };
   }
 
   onClick() {
