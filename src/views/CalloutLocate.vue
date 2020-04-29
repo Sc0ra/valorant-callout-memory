@@ -63,21 +63,15 @@
           />
         </v-layer>
         <v-layer>
-          <v-circle
-            v-for="(pin, id) in pins"
-            ref="pins"
+          <pin
+            v-for="pin in pins"
+            :pin="pin"
             :key="pin.callout"
-            :config="{
-              fill: 'whitesmoke',
-              x: pin.x,
-              y: pin.y,
-              radius: 5,
-              hitStrokeWidth: 10,
-            }"
+            :is-active="isRunning"
+            :is-answer="pin.callout === toGuess[0]"
             @mouseenter="pinHovered = true"
             @mouseleave="pinHovered = false"
-            @click="onClick(pin, id)"
-            @touchstart="onClick(pin, id)"
+            @click="onPinClick(pin.callout === toGuess[0])"
           />
         </v-layer>
       </v-stage>
@@ -121,12 +115,14 @@ import { Getter } from 'vuex-class';
 import Konva from 'konva';
 
 import GameTimer from '@/components/GameTimer.vue';
+import Pin from '@/components/Pin.vue';
 
-import { Map, Place } from '@/store/maps/types';
+import { Map } from '@/store/maps/types';
 
 @Component({
   components: {
     GameTimer,
+    Pin,
   },
 })
 export default class CalloutLocate extends Vue {
@@ -139,7 +135,6 @@ export default class CalloutLocate extends Vue {
   $refs!: {
     wrapper: HTMLDivElement;
     stage: Vue & { getStage: () => Konva.Stage };
-    pins: Vue & { getNode: () => Konva.Shape}[];
   }
 
   @Getter('getMap', { namespace: 'maps' })
@@ -181,42 +176,15 @@ export default class CalloutLocate extends Vue {
     return this.$refs.stage.getStage();
   }
 
-  get pinNodes() {
-    return this.$refs.pins.map((pin) => pin.getNode());
-  }
-
-  onClick(place: Place, placeId: number) {
-    if (this.isRunning) {
-      const pin = this.pinNodes[placeId];
-      const anim = new Konva.Animation((frame) => {
-        if (frame) {
-          const scale = 0.7 * Math.sin((frame.time * 2 * Math.PI) / 800) + 1;
-          pin.scale({ x: scale, y: scale });
-        }
-      }, pin.getLayer());
-      if (place.callout === this.toGuess[0]) {
-        this.successCount += 1;
-        pin.fill('#24e8ad');
-        anim.start();
-        setTimeout(() => {
-          anim.stop();
-          pin.fill('whitesmoke');
-          pin.draw();
-        }, 400);
-      } else {
-        this.failureCount += 1;
-        pin.fill('#ff4655');
-        anim.start();
-        setTimeout(() => {
-          anim.stop();
-          pin.fill('whitesmoke');
-          pin.draw();
-        }, 400);
-      }
-      this.toGuess = this.toGuess.slice(1);
-      if (this.toGuess.length === 0) {
-        this.isRunning = false;
-      }
+  onPinClick(isAnswer: boolean) {
+    if (isAnswer) {
+      this.successCount += 1;
+    } else {
+      this.failureCount += 1;
+    }
+    this.toGuess = this.toGuess.slice(1);
+    if (this.toGuess.length === 0) {
+      this.isRunning = false;
     }
   }
 

@@ -23,7 +23,7 @@ export default class Timer extends Vue {
   })
   isRunning!: boolean;
 
-  timer: number;
+  timer = 0;
 
   @Watch('isRunning', { immediate: true })
   manageTimer(value: boolean) {
