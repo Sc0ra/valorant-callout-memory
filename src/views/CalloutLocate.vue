@@ -1,32 +1,43 @@
 <template>
   <div class="wrapper">
-    <div class="level is-mobile">
-      <div class="level-item success-count">
+    <div class="top-container">
+      <div class="success-count">
         <h2 class="title is-2">
           {{ successCount }}
         </h2>
       </div>
-      <div class="level-item">
+      <div class="center-item">
+        <game-timer v-model="timer" :isRunning="isRunning" />
+        <template v-if="!isRunning">
+          <button
+            v-if="toGuess.length > 0"
+            class="button is-primary is-medium"
+            @click="isRunning = true"
+          >
+            Start
+          </button>
+          <button
+            v-else
+            class="button is-primary is-medium"
+            @click="onRetry"
+          >
+            Retry
+          </button>
+        </template>
         <h2
-          v-if="toGuess.length > 0"
+          v-if="isRunning && toGuess.length > 0"
           class="title is-2"
         >
           {{ toGuess[0] }}
         </h2>
-        <span
-          v-else
-          class="icon is-large retry"
-          @click="onRetry"
-        >
-          <i class="fas fa-redo fa-2x"></i>
-        </span>
       </div>
-      <div class="level-item failure-count">
+      <div class="failure-count">
         <h2 class="title is-2">
           {{ failureCount }}
         </h2>
       </div>
     </div>
+
     <div
       ref="wrapper"
       class="stage-wrapper"
@@ -71,28 +82,33 @@
         </v-layer>
       </v-stage>
     </div>
-    <div
-      v-if="displayHelp"
-      class="message"
+    <transition
+      name="slide-fade"
+      @after-leave="resizeCanvas"
     >
-      <div class="message-header">
-        <p>Rules</p>
-        <button
-          class="delete has-background-dark"
-          @click="onCloseHelp"
-        />
+      <div
+        v-if="displayHelp"
+        class="message"
+      >
+        <div class="message-header">
+          <p>Rules</p>
+          <button
+            class="delete has-background-dark"
+            @click="displayHelp = false"
+          />
+        </div>
+        <div class="message-body has-background-dark has-text-white content">
+          <ul class="has-text-left">
+            <li>
+              Click on the location of the callouts
+            </li>
+            <li>
+              Check where you were wrong at the end of the game
+            </li>
+          </ul>
+        </div>
       </div>
-      <div class="message-body has-background-dark has-text-white content">
-        <ul class="has-text-left">
-          <li>
-            Click on the location of the callouts
-          </li>
-          <li>
-            Check where you were wrong at the end of the game
-          </li>
-        </ul>
-      </div>
-    </div>
+    </transition>
   </div>
 </template>
 
@@ -104,9 +120,15 @@ import { Getter } from 'vuex-class';
 
 import Konva from 'konva';
 
+import GameTimer from '@/components/GameTimer.vue';
+
 import { Map, Place } from '@/store/maps/types';
 
-@Component({})
+@Component({
+  components: {
+    GameTimer,
+  },
+})
 export default class CalloutLocate extends Vue {
   @Prop({
     required: true,
@@ -128,6 +150,8 @@ export default class CalloutLocate extends Vue {
   }
 
   timer = 0;
+
+  isRunning = false;
 
   displayHelp = true;
 
@@ -162,43 +186,44 @@ export default class CalloutLocate extends Vue {
   }
 
   onClick(place: Place, placeId: number) {
-    const pin = this.pinNodes[placeId];
-    const anim = new Konva.Animation((frame) => {
-      if (frame) {
-        const scale = 0.7 * Math.sin((frame.time * 2 * Math.PI) / 800) + 1;
-        pin.scale({ x: scale, y: scale });
+    if (this.isRunning) {
+      const pin = this.pinNodes[placeId];
+      const anim = new Konva.Animation((frame) => {
+        if (frame) {
+          const scale = 0.7 * Math.sin((frame.time * 2 * Math.PI) / 800) + 1;
+          pin.scale({ x: scale, y: scale });
+        }
+      }, pin.getLayer());
+      if (place.callout === this.toGuess[0]) {
+        this.successCount += 1;
+        pin.fill('#24e8ad');
+        anim.start();
+        setTimeout(() => {
+          anim.stop();
+          pin.fill('whitesmoke');
+          pin.draw();
+        }, 400);
+      } else {
+        this.failureCount += 1;
+        pin.fill('#ff4655');
+        anim.start();
+        setTimeout(() => {
+          anim.stop();
+          pin.fill('whitesmoke');
+          pin.draw();
+        }, 400);
       }
-    }, pin.getLayer());
-    if (place.callout === this.toGuess[0]) {
-      this.successCount += 1;
-      pin.fill('#24e8ad');
-      anim.start();
-      setTimeout(() => {
-        anim.stop();
-        pin.fill('whitesmoke');
-        pin.draw();
-      }, 400);
-    } else {
-      this.failureCount += 1;
-      pin.fill('#ff4655');
-      anim.start();
-      setTimeout(() => {
-        anim.stop();
-        pin.fill('whitesmoke');
-        pin.draw();
-      }, 400);
+      this.toGuess = this.toGuess.slice(1);
+      if (this.toGuess.length === 0) {
+        this.isRunning = false;
+      }
     }
-    this.toGuess = this.toGuess.slice(1);
-  }
-
-  onCloseHelp() {
-    this.displayHelp = false;
-    this.$nextTick(() => this.resizeCanvas());
   }
 
   onRetry() {
     this.failureCount = 0;
     this.successCount = 0;
+    this.timer = 0;
     this.toGuess = this.shuffle(this.map.places.map((p) => p.callout))
       .slice(0, this.numberToGuess);
   }
@@ -222,8 +247,8 @@ export default class CalloutLocate extends Vue {
   resizeCanvas() {
     if (this.$refs.wrapper.clientWidth >= this.$refs.wrapper.clientHeight) {
       this.mapSize = {
-        height: (this.$refs.wrapper.clientHeight * 0.95),
-        width: this.$refs.wrapper.clientHeight * 0.95 * this.map.mapRatio,
+        height: (this.$refs.wrapper.clientHeight * 0.98),
+        width: this.$refs.wrapper.clientHeight * 0.98 * this.map.mapRatio,
       };
     } else {
       this.mapSize = {
@@ -265,15 +290,17 @@ export default class CalloutLocate extends Vue {
       margin: auto;
   }
   .success-count {
-    max-width: 150px;
-    text-align: left;
+    width: 150px;
+    max-width: 20%;
+    text-align: center;
     padding: 1rem;
     background-color: $green;
     clip-path: polygon(0 0, 100% 0%, 75% 100%, 0% 90%);
   }
   .failure-count {
-    max-width: 150px;
-    text-align: left;
+    width: 150px;
+    max-width: 20%;
+    text-align: center;
     padding: 1rem;
     background-color: $red;
     clip-path: polygon(0 0, 100% 0%, 100% 90%, 25% 100%);
@@ -282,6 +309,29 @@ export default class CalloutLocate extends Vue {
     cursor: pointer;
   }
   .message {
+    margin: 0;
     margin: 1rem;
+  }
+  .center-item {
+    padding: .5rem 0 1rem 0;
+    .button {
+      margin-top: -1rem;
+      margin-bottom: -0.5rem;
+    }
+  }
+  .top-container {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+
+  .slide-fade-leave-active {
+    transition: all .3s ease;
+  }
+  .slide-fade-enter, .slide-fade-leave-to
+  /* .slide-fade-leave-active below version 2.1.8 */ {
+    transform: translateY(100px);
+    opacity: 0;
   }
 </style>
