@@ -3,8 +3,8 @@
     ref="pin"
     :config="{
       fill: 'whitesmoke',
-      x: pin.x,
-      y: pin.y,
+      x,
+      y,
       radius: 5,
       hitStrokeWidth: 10,
     }"
@@ -21,12 +21,18 @@ import { Component, Vue, Prop } from 'vue-property-decorator';
 import Konva from 'konva';
 
 @Component({})
-export default class Pin extends Vue {
+export default class GamePin extends Vue {
   @Prop({
     required: true,
-    type: Object,
+    type: Number,
   })
-  pin!: { x: number; y: number; callout: string };
+  x!: number;
+
+  @Prop({
+    required: true,
+    type: Number,
+  })
+  y!: number;
 
   @Prop({
     required: true,

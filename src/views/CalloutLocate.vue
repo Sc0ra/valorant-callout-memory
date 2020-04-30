@@ -53,25 +53,23 @@
         :class="{'pointer-hover': pinHovered}"
       >
         <v-layer>
-          <v-image :config="{
-            image: image,
-            width: mapSize.width,
-            height: mapSize.height,
-            x: 0,
-            y: 0,
-          }"
+          <game-map
+            :width="mapSize.width"
+            :height="mapSize.height"
+            :src="map.mapLayout"
           />
         </v-layer>
         <v-layer>
-          <pin
-            v-for="pin in pins"
-            :pin="pin"
-            :key="pin.callout"
+          <game-pin
+            v-for="place in map.places"
+            :x="place.x * mapSize.width"
+            :y="place.y * mapSize.height"
+            :key="place.callout"
             :is-active="isRunning"
-            :is-answer="pin.callout === toGuess[0]"
+            :is-answer="place.callout === toGuess[0]"
             @mouseenter="pinHovered = true"
             @mouseleave="pinHovered = false"
-            @click="onPinClick(pin.callout === toGuess[0])"
+            @click="onPinClick(place.callout === toGuess[0])"
           />
         </v-layer>
       </v-stage>
@@ -115,14 +113,16 @@ import { Getter } from 'vuex-class';
 import Konva from 'konva';
 
 import GameTimer from '@/components/GameTimer.vue';
-import Pin from '@/components/Pin.vue';
+import GamePin from '@/components/GamePin.vue';
+import GameMap from '@/components/GameMap.vue';
 
 import { Map } from '@/store/maps/types';
 
 @Component({
   components: {
     GameTimer,
-    Pin,
+    GamePin,
+    GameMap,
   },
 })
 export default class CalloutLocate extends Vue {
@@ -164,18 +164,6 @@ export default class CalloutLocate extends Vue {
 
   image: HTMLImageElement | null = null;
 
-  get pins() {
-    return this.map && this.map.places.map((place) => ({
-      ...place,
-      x: place.x * this.mapSize.width,
-      y: place.y * this.mapSize.height,
-    }));
-  }
-
-  get stage() {
-    return this.$refs.stage.getStage();
-  }
-
   onPinClick(isAnswer: boolean) {
     if (isAnswer) {
       this.successCount += 1;
@@ -192,23 +180,14 @@ export default class CalloutLocate extends Vue {
     this.failureCount = 0;
     this.successCount = 0;
     this.timer = 0;
-    this.toGuess = this.shuffle(this.map.places.map((p) => p.callout))
-      .slice(0, this.numberToGuess);
+    this.setToGuess();
   }
 
   @Watch('map', { immediate: true })
   onMapChange() {
-    if (this.map) {
-      const image = new Image();
-      image.src = `${process.env.BASE_URL}${this.map.mapLayout}`;
-      image.onload = () => {
-        this.image = image;
-      };
-      this.toGuess = this.shuffle(this.map.places.map((p) => p.callout))
-        .slice(0, this.numberToGuess);
-      if (this.$refs.wrapper) {
-        this.resizeCanvas();
-      }
+    if (this.map && this.$refs.wrapper) {
+      this.setToGuess();
+      this.resizeCanvas();
     }
   }
 
@@ -232,13 +211,13 @@ export default class CalloutLocate extends Vue {
     }
   }
 
-  shuffle = (array: string[]) => {
-    const shuffled = [...array];
+  setToGuess() {
+    const shuffled = [...this.map.places.map((p) => p.callout)];
     for (let i = shuffled.length - 1; i > 0; i -= 1) {
       const j = Math.floor(Math.random() * (i + 1));
       [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
     }
-    return shuffled;
+    return shuffled.slice(0, this.numberToGuess);
   }
 }
 </script>
